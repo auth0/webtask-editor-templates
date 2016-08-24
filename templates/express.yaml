@@ -1,0 +1,36 @@
+name: Express
+type: sample
+order: 6
+description: |
+  A sample about how to use Express from Webtasks.
+note:
+code:
+  js: |
+    var express    = require('express');
+    var Webtask    = require('webtask-tools');
+    var bodyParser = require('body-parser');
+    var app = express();
+
+    app.use(bodyParser.json());
+
+    app.get('/', function (req, res) {
+      res.sendStatus(200);
+    });
+
+    module.exports = Webtask.fromExpress(app);
+
+  es6: |
+    'use latest';
+
+    import express from 'express';
+    import { fromExpress } from 'webtask-tools';
+    import bodyParser from 'body-parser';
+    const app = express();
+
+    app.use(bodyParser.json());
+
+    app.get('/', (req, res) => {
+      res.sendStatus(200);
+    });
+
+    module.exports = fromExpress(app);

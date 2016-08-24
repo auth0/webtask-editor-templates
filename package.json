@@ -1,0 +1,24 @@
+{
+  "name": "webtask-editor-templates",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Webtask editor templates.",
+  "scripts": {
+    "cdn": "NODE_ENV=production grunt cdn"
+  },
+  "keywords": [
+    "webtask",
+    "editor",
+    "templates"
+  ],
+  "author": "javier.centurion@auth0.com",
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-aws-s3": "^0.14.5",
+    "grunt-cli": "^1.2.0",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-env": "^0.4.4",
+    "grunt-http": "^2.0.1"
+  }
+}

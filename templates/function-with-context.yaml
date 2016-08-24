@@ -1,0 +1,30 @@
+name: Function with context
+type: sample
+order: 4
+description: |
+  A more advanced version of the programming model allows you to return a function that accepts two arguments: a context and a callback.
+note:
+  title: Description
+  content: |
+    The `context` parameter is a JavaScript object with `data`, `query`, `secrets`, and optionally `body` properties. It also offers the `context.storage.get` and `context.storage.set` APIs to access durable storage.
+
+    The `context.data` is a JavaScript object that combines parameters passed to the code using one of several machanisms:
+
+    - The `ectx` claim of the [webtask token](https://webtask.io/docs/token).
+    - The `pctx` claim of the [webtask token](https://webtask.io/docs/token).
+    - The URL query parameters of the request.
+    - If the `pb` and `mb` claims of the [webtask token](https://webtask.io/docs/token) are both set, the key value pairs passed in the request body.
+
+    The `context.query` property is a hash of URL query parameters. The `context.secrets` property contains decrypted secrets associated with your webtask at creation time. Lastly, the `context.body` is JavaScript representation of a parsed `application/json` or `application/x-www-form-urlencoded` request body. It is only present for requests with bodies of appropriate content type when the pb claim of the [webtask token](https://webtask.io/docs/token) is set to 1.
+code:
+  js: |
+    module.exports = function(context, cb) {
+      cb(null, { hello: context.data.name || 'Anonymous' });
+    }
+
+  es6: |
+    'use latest';
+
+    module.exports = (context, cb) => {
+      cb(null, { hello: context.data.name || 'Anonymous' });
+    }

@@ -1,0 +1,18 @@
+name: Simple function
+type: sample
+order: 3
+description: |
+  In the simplest mechanism, you must provide JavaScript code that returns a function which accepts a single argument: a callback. To indicate completion, the function must call the callback with two arguments: an error, and the result.
+note:
+code:
+  js: |
+    module.exports = function(cb) {
+      cb(null, { i_am: 'done '});
+    }
+
+  es6: |
+    'use latest';
+
+    module.exports = (cb) => {
+      cb(null, { i_am: 'done '});
+    }

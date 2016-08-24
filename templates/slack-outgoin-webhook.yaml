@@ -1,0 +1,63 @@
+name: Slack outgoing webhook
+order: 1
+type: webhook
+description: |
+  Outgoing Webhooks allow you to listen for triggers in Slack chat messages, which will then send relevant data to external URL(s) in real-time.
+note:
+  title: Instructions
+  content: |
+    # Create an Outgoing WebHook in Slack
+
+    Go to Slack [Outgoing WebHooks](https://slack.com/services/new/outgoing-webhook), and click on `Add Outgoing WebHook Integration`.
+
+    # Setup the bot
+
+    1. Paste the URL of the webtask `{WEBTASK_URL}`
+    2. (Optional) Choose the channel where the bot will respond (or leave Any channel)
+    3. (Optional if a channel is specified) Choose what word will trigger the bot (or leave empty to respond to anything)
+    4. (Optional) Give it a name and image/emoji,
+
+    *You will probably find yourself doing trial and error between your Slack window and here. The good news is that this will be instantanous, similar to the experience you get when doing web development and you go back between the code editor and the browser.*
+code:
+  js: |
+    // Slack will send a request for each message sent on any or a specific channel.
+    // If trigger word has been configured on Slack, only messages starting with
+    // that trigger word will be sent
+    module.exports = function (context, done) {
+      console.log('slack request: ', context.data);
+      // context.data contains:
+      //    token=XXXXXXXXXXXXXXXXXX
+      //    team_id=T0001
+      //    team_domain=example
+      //    channel_id=C2147483705
+      //    channel_name=test
+      //    timestamp=1355517523.000005
+      //    user_id=U2147483697
+      //    user_name=Steve
+      //    text=googlebot: What is the air-speed velocity of an unladen swallow?
+      //    trigger_word=googlebot:
+
+      done(null, { text: 'hello' });
+    }
+
+  es6: |
+    "use latest";
+    // Slack will send a request for each message sent on any or a specific channel.
+    // If trigger word has been configured on Slack, only messages starting with
+    // that trigger word will be sent
+    module.exports = (context, done) => {
+      console.log('slack request: ', context.data);
+      // context.data contains:
+      //    token=XXXXXXXXXXXXXXXXXX
+      //    team_id=T0001
+      //    team_domain=example
+      //    channel_id=C2147483705
+      //    channel_name=test
+      //    timestamp=1355517523.000005
+      //    user_id=U2147483697
+      //    user_name=Steve
+      //    text=googlebot: What is the air-speed velocity of an unladen swallow?
+      //    trigger_word=googlebot:
+
+      done(null, { text: 'hello' });
+    }
