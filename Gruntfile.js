@@ -3,6 +3,7 @@ const path = require('path');
 
 module.exports = function exec(grunt) {
   const TMPL_PATH = 'webtask-editor/assets';
+  const DEV_PATH  = 'webtask-editor/assets/develop';
 
   const pkg  = require('./package');
 
