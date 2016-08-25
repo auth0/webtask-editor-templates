@@ -4,22 +4,17 @@ order: 8
 description: |
   A sample about sending emails with Sendgrid.
 note:
+  title: instructions
+  content: |
+    You must set a valid `SENDGRID_API_KEY` webtask secret for it to work.
+
+    More info about sendgrid API: https://github.com/sendgrid/sendgrid-nodejs
 code:
   es6: |
     'use latest';
 
-    /**
-    * Example webtask using sengrid to send emails.
-    * More info about sendgrid API https://github.com/sendgrid/sendgrid-nodejs
-    */
-
     import sendgrid from 'sendgrid';
     const helper = sendgrid.mail;
-
-    /**
-    * You must set a valid SENDGRID_API_KEY webtask
-    * secret for this webtask to work.
-    */
 
     module.exports = (context, cb) => {
       // POST a JSON with at least the following properties.

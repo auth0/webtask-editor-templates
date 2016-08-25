@@ -4,21 +4,16 @@ order: 9
 description: |
   A sample about sending SMS with Twilio.
 note:
+  title: instructions
+  content: |
+    You must set valid `TWILIO_SID` and `TWILIO_AUTH_TOKEN` webtask secrets for it to work.
+
+    More info about twilio API: https://www.twilio.com/docs/libraries/node
 code:
   es6: |
     'use latest';
 
-    /**
-    * Example webtask using Twilio to send SMS.
-    * More info about twilio API https://www.twilio.com/docs/libraries/node
-    */
-
     import twilio from 'twilio';
-
-    /**
-    * You must set valid TWILIO_SID, TWILIO_AUTH_TOKEN
-    * webtask secrets for this webtask to work.
-    */
 
     module.exports = (context, cb) => {
       // POST a json object with at least the following properties.
