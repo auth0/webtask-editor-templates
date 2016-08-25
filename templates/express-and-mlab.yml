@@ -44,7 +44,7 @@ code:
       });
     });
 
-    server.post('/', (req, res) => {
+    server.post('/', (req, res, next) => {
       const { MONGO_URL } = req.webtaskContext.data;
 
       // Do data sanitation here.
