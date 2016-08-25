@@ -32,7 +32,7 @@ code:
       const { MONGO_URL } = req.webtaskContext.data;
       const { id } = req.params;
 
-      MongoClient.connect(MONGO_URL, function get(err, db) {
+      MongoClient.connect(MONGO_URL, (err, db) => {
         if (err) return next(err);
 
         db.collection(collection).findOne({ id }, (err, result) => {
