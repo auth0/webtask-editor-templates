@@ -1,0 +1,38 @@
+name: Twilio
+type: sample
+order: 9
+description: |
+  A sample about sending SMS with Twilio.
+note:
+code:
+  es6: |
+    'use latest';
+
+    /**
+    * Example webtask using Twilio to send SMS.
+    * More info about twilio API https://www.twilio.com/docs/libraries/node
+    */
+
+    import twilio from 'twilio';
+
+    /**
+    * You must set valid TWILIO_SID, TWILIO_AUTH_TOKEN
+    * webtask secrets for this webtask to work.
+    */
+
+    module.exports = (context, cb) => {
+      // POST a json object with at least the following properties.
+      const { body, to_number, from_number } = context.data;
+      const { TWILIO_SID, TWILIO_AUTH_TOKEN } = context.secrets;
+
+      var client = new twilio.RestClient(TWILIO_SID, TWILIO_AUTH_TOKEN);
+
+      client.messages.create({
+        body,
+        to_number,
+        from_number
+      }, (err, message) => {
+        if (err) return cb(err);
+        cb(null, message);
+      });
+    };
