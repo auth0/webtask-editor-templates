@@ -20,11 +20,11 @@ code:
   js: |
     module.exports = function(context, cb) {
       cb(null, { hello: context.data.name || 'Anonymous' });
-    }
+    };
 
   es6: |
     'use latest';
 
     module.exports = (context, cb) => {
       cb(null, { hello: context.data.name || 'Anonymous' });
-    }
+    };

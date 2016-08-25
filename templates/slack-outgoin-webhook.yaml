@@ -38,7 +38,7 @@ code:
       //    trigger_word=googlebot:
 
       done(null, { text: 'hello' });
-    }
+    };
 
   es6: |
     "use latest";
@@ -60,4 +60,4 @@ code:
       //    trigger_word=googlebot:
 
       done(null, { text: 'hello' });
-    }
+    };
