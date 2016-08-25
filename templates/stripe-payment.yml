@@ -1,8 +1,8 @@
-name: Express with mlab
+name: Stripe payment
 type: sample
 order: 11
 description: |
-  A sample about how to use Express with mlab from Webtasks.
+  A sample about how to use Stripe from Webtasks.
 note:
   title: instructions
   content: |
