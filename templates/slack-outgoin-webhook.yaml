@@ -6,6 +6,7 @@ description: |
 sampleRequest: 
   method: 'POST'
   type: 'application/json'
+  mode: 'body'
   data: |
     {
       "token":"XXXXXXXXXXXXXXXXXX",
