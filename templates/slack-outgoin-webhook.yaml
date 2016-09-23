@@ -5,7 +5,7 @@ description: |
   Outgoing Webhooks allow you to listen for triggers in Slack chat messages, which will then send relevant data to external URL(s) in real-time.
 sampleRequest: 
   method: 'POST'
-  type: 'application/json'
+  type: 'json'
   mode: 'body'
   data: |
     {
