@@ -1,4 +1,7 @@
 name: Slack outgoing webhook
+author: 
+  name: Auth0
+  link: https://auth0.com/
 order: 1
 type: webhook
 description: |
