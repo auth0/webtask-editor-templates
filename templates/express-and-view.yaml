@@ -1,6 +1,9 @@
 name: Express with view
 type: sample
 order: 7
+author: 
+  name: Auth0
+  link: https://auth0.com/
 description: |
   A sample about how to use Express with embeded view from Webtasks.
 note:
