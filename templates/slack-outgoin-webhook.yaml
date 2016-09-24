@@ -9,7 +9,7 @@ sampleRequest:
   mode: 'body'
   data: |
     {
-      "token":"XXXXXXXXXXXXXXXXXX",
+      "token":"REPLACE_WITH_SLACK_TOKEN",
       "team_id":"T0001",
       "team_domain":"example",
       "channel_id":"C2147483705",
@@ -24,7 +24,7 @@ settings:
   parse: true
   merge: true
 secrets: 
-  WEBHOOK_SECRET: 'XXXXXXXXXXXXXXXXXX'
+  WEBHOOK_SECRET: 'REPLACE_WITH_SLACK_TOKEN'
 note:
   title: Instructions
   content: |
