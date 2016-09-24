@@ -1,7 +1,7 @@
 name: Automatically tag new versions
 author: 
-  name: Auth0
-  link: https://auth0.com/
+  name: ggoodman
+  link: https://github.com/ggoodman
 order: 2
 type: webhook
 description: |
