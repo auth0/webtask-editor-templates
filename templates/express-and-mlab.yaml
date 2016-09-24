@@ -1,8 +1,8 @@
 name: Express with mlab
 type: sample
 author: 
-  name: Auth0
-  link: https://auth0.com/
+  name: verlic
+  link: https://github.com/Verlic
 order: 10
 description: |
   A sample about how to use Express with mlab from Webtasks.
