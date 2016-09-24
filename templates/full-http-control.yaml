@@ -1,8 +1,8 @@
 name: Full HTTP control
 order: 5
 author: 
-  name: Auth0
-  link: https://auth0.com/
+  name: tjanczuk
+  link: https://github.com/tjanczuk
 type: sample
 description: |
   The most flexible programming model allows you to take full control over the HTTP request and response.
