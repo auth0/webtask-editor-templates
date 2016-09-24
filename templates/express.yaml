@@ -2,8 +2,8 @@ name: Express
 type: sample
 order: 6
 author: 
-  name: Auth0
-  link: https://auth0.com/
+  name: jcenturion
+  link: https://github.com/jcenturion
 description: |
   A sample about how to use Express from Webtasks.
 note:
