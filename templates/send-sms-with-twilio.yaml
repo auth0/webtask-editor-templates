@@ -1,4 +1,7 @@
 name: Twilio
+author: 
+  name: Auth0
+  link: https://auth0.com/
 type: sample
 order: 9
 description: |
