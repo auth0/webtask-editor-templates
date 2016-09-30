@@ -1,6 +1,6 @@
 # Webtask Editor Templates
 
-Here you will find the entire list of templates that use can use from `Webtask Editor`.
+Here you will find the entire list of templates that you can use from `Webtask Editor`.
 
 ## Templates
 
