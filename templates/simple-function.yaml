@@ -1,4 +1,7 @@
 name: Simple function
+author: 
+  name: tjanczuk
+  link: https://github.com/tjanczuk
 type: sample
 order: 3
 description: |
@@ -8,11 +11,11 @@ code:
   js: |
     module.exports = function(cb) {
       cb(null, { i_am: 'done '});
-    }
+    };
 
   es6: |
     'use latest';
 
     module.exports = (cb) => {
       cb(null, { i_am: 'done '});
-    }
+    };

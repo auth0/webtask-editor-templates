@@ -1,6 +1,9 @@
 name: Express
 type: sample
 order: 6
+author: 
+  name: jcenturion
+  link: https://github.com/jcenturion
 description: |
   A sample about how to use Express from Webtasks.
 note:

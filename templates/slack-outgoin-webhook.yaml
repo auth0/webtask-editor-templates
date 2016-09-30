@@ -1,8 +1,33 @@
 name: Slack outgoing webhook
+author: 
+  name: woloski
+  link: https://github.com/woloski
 order: 1
 type: webhook
 description: |
   Outgoing Webhooks allow you to listen for triggers in Slack chat messages, which will then send relevant data to external URL(s) in real-time.
+sampleRequest: 
+  method: 'POST'
+  type: 'json'
+  mode: 'body'
+  data: |
+    {
+      "token":"REPLACE_WITH_SLACK_TOKEN",
+      "team_id":"T0001",
+      "team_domain":"example",
+      "channel_id":"C2147483705",
+      "channel_name":"test",
+      "timestamp":"1355517523.000005",
+      "user_id":"U2147483697",
+      "user_name":"jdoe",
+      "text":"googlebot: What is the air-speed velocity of an unladen swallow?",
+      "trigger_word": "googlebot:"
+    }
+settings:
+  parse: true
+  merge: true
+secrets: 
+  WEBHOOK_SECRET: 'REPLACE_WITH_SLACK_TOKEN'
 note:
   title: Instructions
   content: |
@@ -23,41 +48,20 @@ code:
     // Slack will send a request for each message sent on any or a specific channel.
     // If trigger word has been configured on Slack, only messages starting with
     // that trigger word will be sent
+    
     module.exports = function (context, done) {
       console.log('slack request: ', context.data);
-      // context.data contains:
-      //    token=XXXXXXXXXXXXXXXXXX
-      //    team_id=T0001
-      //    team_domain=example
-      //    channel_id=C2147483705
-      //    channel_name=test
-      //    timestamp=1355517523.000005
-      //    user_id=U2147483697
-      //    user_name=Steve
-      //    text=googlebot: What is the air-speed velocity of an unladen swallow?
-      //    trigger_word=googlebot:
-
       done(null, { text: 'hello' });
-    }
+    };
 
   es6: |
     "use latest";
+    
     // Slack will send a request for each message sent on any or a specific channel.
     // If trigger word has been configured on Slack, only messages starting with
     // that trigger word will be sent
+    
     module.exports = (context, done) => {
       console.log('slack request: ', context.data);
-      // context.data contains:
-      //    token=XXXXXXXXXXXXXXXXXX
-      //    team_id=T0001
-      //    team_domain=example
-      //    channel_id=C2147483705
-      //    channel_name=test
-      //    timestamp=1355517523.000005
-      //    user_id=U2147483697
-      //    user_name=Steve
-      //    text=googlebot: What is the air-speed velocity of an unladen swallow?
-      //    trigger_word=googlebot:
-
       done(null, { text: 'hello' });
-    }
+    };

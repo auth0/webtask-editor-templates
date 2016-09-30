@@ -108,7 +108,6 @@ note:
     The `context` argument behaves the same way as in the two simpler programming models. The body of the request will be unconsumed unless the `pb` claim of the [webtask token](https://webtask.io/docs/token) is set to 1. Note that this programming model does not have a concept of a callback. Ending the HTTP response indicates completion.
 ```
 
-
 ### `code`
 
 The actual code for the webtask. It supports `js` or `es6`.
@@ -129,7 +128,6 @@ code:
       res.end('<h1>Hello, world!</h1>');
     }
 ```
-
 
 ## License
 

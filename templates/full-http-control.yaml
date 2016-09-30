@@ -1,5 +1,8 @@
 name: Full HTTP control
 order: 5
+author: 
+  name: tjanczuk
+  link: https://github.com/tjanczuk
 type: sample
 description: |
   The most flexible programming model allows you to take full control over the HTTP request and response.
@@ -12,7 +15,7 @@ code:
     module.exports = function (context, req, res) {
       res.writeHead(200, { 'Content-Type': 'text/html '});
       res.end('<h1>Hello, world!</h1>');
-    }
+    };
 
   es6: |
     'use latest';
@@ -20,4 +23,4 @@ code:
     module.exports = (context, req, res) => {
       res.writeHead(200, { 'Content-Type': 'text/html '});
       res.end('<h1>Hello, world!</h1>');
-    }
+    };
