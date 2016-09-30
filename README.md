@@ -20,19 +20,19 @@ If you have a webtask to share, you can create a _Pull Request_ and add your tem
 
 #### Fields
 
-`name`
+**`name`**
 
 The name of the template. It will appear on the templates section.
 
-`type`
+**`type`**
 
 This is the type of the example. It can be `sample` or `webhook`. Currently not in use.
 
-`description`
+**`description`**
 
 The description of the template it will appear on the list of templates.
 
-`author`
+**`author`**
 
 Indicates who writes the template.
 
@@ -45,7 +45,7 @@ author:
   link: https://github.com/johndoe
 ```
 
-`sampleRequest`
+**`sampleRequest`**
 
 Sample request gives you the posibility to have a sample request by default for testing the webtask.
 
@@ -74,7 +74,7 @@ sampleRequest:
     }
 ```
 
-`settings`
+**`settings`**
 
 - `parse`: Indicates if the body should be parsed.
 - `merge`: Indicates if the body should be merged.
@@ -85,7 +85,7 @@ settings:
   merge: true
 ```
 
-`secrets`
+**`secrets`**
 
 This is the list of secrets that your template requires for working, basically a key/value pair.
 
@@ -94,7 +94,7 @@ secrets:
   WEBHOOK_SECRET: 'REPLACE_WITH_SLACK_TOKEN'
 ```
 
-`note`
+**`note`**
 
 Here you can put some instructions about how to use the template or examplain what it does. A note, contains the following fields:
 
@@ -108,7 +108,7 @@ note:
     The `context` argument behaves the same way as in the two simpler programming models. The body of the request will be unconsumed unless the `pb` claim of the [webtask token](https://webtask.io/docs/token) is set to 1. Note that this programming model does not have a concept of a callback. Ending the HTTP response indicates completion.
 ```
 
-### `code`
+**`code`**
 
 The actual code for the webtask. It supports `js` or `es6`.
 
