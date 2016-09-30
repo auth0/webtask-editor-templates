@@ -14,10 +14,6 @@
 
 The name of the template. It will appear on the templates section.
 
-### `order`
-
-The order of appearance of the template.
-
 ### `type`
 
 This is the type of the example. It can be `sample` or `webhook`. Currently not in use.
@@ -46,7 +42,6 @@ The actual code for the webtask. It supports `js` or `es6`.
 
 ```yaml
 name: Full HTTP control
-order: 5
 type: sample
 description: |
   The most flexible programming model allows you to take full control over the HTTP request and response.
