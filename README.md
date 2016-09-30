@@ -4,7 +4,7 @@ Here you will find the entire list of templates that you can use from `Webtask E
 
 ## Templates
 
-Basically you have to views of templates:
+Basically you have two views of templates:
 
 - Templates list
 
