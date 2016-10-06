@@ -1,0 +1,42 @@
+name: Express with Auth0
+type: secure
+author: 
+  name: mcastany
+  link: https://github.com/mcastany
+order: 12
+description: |
+  A sample about how to use Express with Auth0 from Webtasks.
+note:
+  title: instructions
+  content: |
+    You must set an `AUTH0_DOMAIN` (e.g. account.auth0.com) webtask secret and the `AUDIENCE` of the resource server for it to work.
+code:
+  es6: |
+    'use latest';
+
+    import express from 'express';
+    import { fromExpress } from 'webtask-tools';
+    import bodyParser from 'body-parser';
+    const app = express();
+
+    app.use(bodyParser.json());
+
+    const jwksRsa = require('jwks-rsa');
+    const jwt = require('express-jwt');
+
+    app.use((req, res, next) => { 
+      const issuer = 'https://' + req.webtaskContext.secrets.AUTH0_DOMAIN; + '/';
+      jwt({
+        secret: jwksRsa.expressJwtSecret({ jwksUri: issuer + '.well-known/jwks.json' }),
+        audience: req.webtaskContext.secrets.AUDIENCE,
+        issuer: issuer,
+        algorithms: [ 'RS256' ]
+      })(req, res, next);
+    });
+
+
+    app.get('/', (req, res) => {
+      res.json(req.user);
+    });
+
+    module.exports = fromExpress(app);
