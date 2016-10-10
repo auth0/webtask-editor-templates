@@ -1,0 +1,196 @@
+name: Facebook Proxy
+type: secure
+author: 
+  name: mcastany
+  link: https://github.com/mcastany
+order: 12
+description: |
+  Webtask protected with JSON Web Token (RS256) which consumes Facebook API
+note:
+  title: instructions
+  content: |
+    You must set an `AUTH0_DOMAIN` (e.g. YOURS.auth0.com) webtask secret and the `AUDIENCE` of the resource server for it to work. Also, create a client and grant for the Auth0 Management API, and set API2_CLIENT_ID and API2_CLIENT_SECRET.
+code:
+  es6: |
+    'use latest';
+
+    import express from 'express';
+    import { fromExpress } from 'webtask-tools';
+    import bodyParser from 'body-parser';
+    const app = express();
+
+    app.use(bodyParser.json());
+
+    const jwksRsa = require('jwks-rsa');
+    const jwt = require('express-jwt');
+
+    var Auth0 = {
+      __settings : {
+        auth0_domain_key : 'AUTH0_DOMAIN',
+        client_id_key : 'API2_CLIENT_ID',
+        client_secret_key : 'API2_CLIENT_SECRET'
+      },
+      __contextStorage : undefined,
+      __loadStorageContext : (req, next) => { 
+        return req.webtaskContext.storage.get((err, data) => {
+          if (err) return next(err);
+          
+          Auth0.__contextStorage = data;
+          
+          next(null, data);
+        }); 
+      },
+      __storeContextStorage : (req, next) => { 
+        return req.webtaskContext.storage.set(Auth0.__contextStorage, next); 
+      },
+      __getProfile: function(cacheIdentities, req, res, next){
+        const options = {
+          url: `https://${req.webtaskContext.data[Auth0.__settings.auth0_domain_key]}/api/v2/users/${req.user.user_id}`,
+          json: true,
+          headers: {
+            authorization: 'Bearer ' + req.access_token
+          }
+        };
+
+        return request.get(options, (err, response, body) => {
+          if (err) return next(Boom.wrap(err, 400));
+          if (response.statusCode !== 200) return next(Boom.badRequest('Errror calling users API'));
+          
+          function done(err){
+            req.user = body;
+            next();
+          }
+          
+          if (cacheIdentities){
+            if (!Auth0.__contextStorage) Auth0.__contextStorage = {};
+
+            Auth0.__contextStorage[req.user.user_id] = body;
+            return Auth0.__storeContextStorage(req, done);
+          }
+          
+          done();
+        });
+      },
+      overrideOptions : function(options){
+        options = options || {};
+        Auth0.__settings.auth0_domain_key = options.auth0_domain_key || Auth0.__settings.auth0_domain_key;
+        Auth0.__settings.client_id_key = options.client_id_key || Auth0.__settings.client_id_key;
+        Auth0.__settings.client_secret_key = options.client_secret_key || Auth0.__settings.client_secret_key;
+        return Auth0;
+      },
+      getAccessToken: function(req, res, next) {
+        var context = req.webtaskContext;
+        if (!context.data[Auth0.__settings.client_id_key] || 
+            !context.data[Auth0.__settings.auth0_domain_key]) {
+           return next(Boom.badRequest('Missing required properties in settings')); 
+        }
+
+        Auth0.__loadStorageContext(req, (err, data) => {
+          if (err) return next(Boom.wrap(err, 400));
+          
+          data = data || {};
+          
+          if (data.access_token && jwt.decode(data.access_token).exp > Date.now()){
+            req.access_token = data.access_token;
+            return next();
+          }
+          
+          const options = {
+            url: `https://${context.data[Auth0.__settings.auth0_domain_key]}/oauth/token`,
+            json: {
+              audience: `https://${context.data[Auth0.__settings.auth0_domain_key]}/api/v2/`,
+              grant_type: 'client_credentials',
+              client_id: context.data[Auth0.__settings.client_id_key],
+              client_secret: context.data[Auth0.__settings.client_secret_key]
+            }
+          };
+
+          return request.post(options, (err, response, body) => {
+            if (err) return next(Boom.wrap(err, 400));
+            if (response.statusCode !== 200) return next(Boom.badRequest('There was an error calling /oauth/token'));
+            
+            Auth0.__contextStorage = Auth0.__contextStorage || {};
+            Auth0.__contextStorage.access_token = body.access_token;
+            
+            // Store token in context
+            Auth0.__storeContextStorage(req, (err) => {
+              req.access_token = body.access_token;
+              next();
+            });
+          });
+        });
+      },
+      ensureProfile : function(cacheIdentities){
+        return function(req, res, next) {
+          req.user.user_id = req.user.sub;
+          if (!req.user || !req.user.user_id) { 
+            return next(Boom.unauthorized('Unable to get user profile')); 
+          }
+          
+          function getAccessTokenAndProfile(req, res, next){
+            return Auth0.getAccessToken(req, res, function(err){
+              if (err) return next(Boom.wrap(err, 400));
+              
+              if (!req.access_token){
+                return next(Boom.badRequest('There was an error getting APIv2 access token'));
+              }
+              
+              return Auth0.__getProfile(cacheIdentities, req, res, next);
+            });
+          }
+          
+          function getProfile(req, res, next){
+            if (!req.access_token){
+               return getAccessTokenAndProfile(req, res, next);
+            }
+          
+            return Auth0.__getProfile(cacheIdentities, req, res, next);
+          }
+          
+          if (cacheIdentities) {
+            return Auth0.__loadStorageContext(req, (err) => {
+              Auth0.__contextStorage = Auth0.__contextStorage || {};
+
+              if (Auth0.__contextStorage[req.user.user_id]){
+                req.user = Auth0.__contextStorage[req.user.user_id];
+                return next();
+              }
+              
+              getProfile(req, res, next);
+            });
+          }
+          
+          getProfile(req, res, next);
+        };
+      }
+    };
+
+    // all routes will check the JWT
+    app.use((req, res, next) => { 
+      const issuer = 'https://' + req.webtaskContext.secrets.AUTH0_DOMAIN; + '/';
+      jwt({
+        secret: jwksRsa.expressJwtSecret({ jwksUri: issuer + '.well-known/jwks.json' }),
+        audience: req.webtaskContext.secrets.AUDIENCE,
+        issuer: issuer,
+        algorithms: [ 'RS256' ]
+      })(req, res, next);
+    });
+
+
+    app.get('/test', (req, res) => {
+      // test endpoint, no-operation
+      res.send(200);
+    });
+    
+    app.get('/photos', Auth0.ensureProfile(), (req, res) => {
+      var fb_access_token = req.user.identities[0].access_token;
+      request.get({url: 'https://graph.facebook.com/v2.8/me/photos?fields=images&access_token=' + fb_access_token}, (err, resp, body) => {
+        if (err) return res.send(400, err);
+        if (resp.statusCode !== 200) return res.send(400, body);
+        
+        res.json(JSON.parse(body));
+      });
+    });
+
+
+    module.exports = fromExpress(app);

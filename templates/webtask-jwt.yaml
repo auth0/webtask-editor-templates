@@ -1,15 +1,15 @@
-name: Express with Auth0
+name: Secure Webtask (JWT)
 type: secure
 author: 
   name: mcastany
   link: https://github.com/mcastany
 order: 12
 description: |
-  A sample about how to use Express with Auth0 from Webtasks.
+  Simple webtask protected with JSON Web Token (RS256)
 note:
   title: instructions
   content: |
-    You must set an `AUTH0_DOMAIN` (e.g. account.auth0.com) webtask secret and the `AUDIENCE` of the resource server for it to work.
+    You must set an `AUTH0_DOMAIN` (e.g. YOURS.auth0.com) webtask secret and the `AUDIENCE` of the resource server for it to work.
 code:
   es6: |
     'use latest';
@@ -34,9 +34,14 @@ code:
       })(req, res, next);
     });
 
+    app.get('/test', (req, res) => {
+      // test endpoint, no-operation
+      res.send(200);
+    });
 
     app.get('/', (req, res) => {
-      res.json(req.user);
+      // add your logic, you can use scopes from req.user
+      res.json({hi : req.user.sub});
     });
 
     module.exports = fromExpress(app);
