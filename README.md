@@ -96,7 +96,7 @@ secrets:
 
 **`note`**
 
-Here you can put some instructions about how to use the template or examplain what it does. A note, contains the following fields:
+Here you can put some instructions about how to use the template or explain what it does. A note, contains the following fields:
 
 - `title`: The title of the note. It will appear on the details section
 - `content`: The content of the note. It supports markdown.
