@@ -46,7 +46,6 @@ code:
 
     app.post('/payment', (req,res) => {
       var ctx = req.webtaskContext;
-
       var STRIPE_SECRET_KEY = ctx.secrets.STRIPE_SECRET_KEY;
 
       stripe(STRIPE_SECRET_KEY).charges.create({
@@ -64,8 +63,7 @@ code:
 
     // comment this to disable the test form
     app.get('/', (req, res) => {
-      var ctx = req.webtaskContext;
-      
+      var ctx = req.webtaskContext; 
       res.send(renderView(ctx));
     });
 
