@@ -19,7 +19,7 @@ note:
 
     HTML code snippet example to embed into your web-page / application.
     ```html
-      <form action="{url_to_your_webtask}" method="POST">
+      <form action="{url_to_your_webtask}&currency=USD&amount=2000&description=Test%20item" method="POST">
         <script
           src="https://checkout.stripe.com/checkout.js" class="stripe-button"
           data-key="{STRIPE_PUBLISHABLE_KEY}"
@@ -69,7 +69,7 @@ code:
 
     function renderView(ctx) {
       return `
-      <form action="/stripe/payment?currency=USD&amount=100&description=2%20Widgets" method="POST">
+      <form action="/stripe/payment?currency=USD&amount=2000&description=Test%20item" method="POST">
         <script
           src="https://checkout.stripe.com/checkout.js" class="stripe-button"
           data-key="${ctx.secrets.STRIPE_PUBLISHABLE_KEY}"
