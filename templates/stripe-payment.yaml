@@ -5,20 +5,27 @@ author:
 type: sample
 order: 11
 description: |
-  A sample about how to use Stripe from Webtasks.
+  A webtask that can be used for submitting payments to Stripe. Includes a test form with a pay button.
 note:
   title: instructions
   content: |
-    You must set a valid `STRIPE_SECRET_KEY` webtask secret for it to work.
+    This template creates a Webtask with 2 routes.
+
+    `/`        - Returns a test form with a pay button
+    `/payment` - Payment endpoint which invokes the Stripe API
+
+    * You must set a valid `STRIPE_SECRET_KEY` for the `payment` API to work. 
+    * Set a valid `STRIPE_PUBLISHABLE_KEY` for the payment page to work. 
+
     HTML code snippet example to embed into your web-page / application.
     ```html
       <form action="{url_to_your_webtask}" method="POST">
         <script
           src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-          data-key="pk_test_6pRNASCoBOKtIshFeQd4XMUh"
+          data-key="{STRIPE_PUBLISHABLE_KEY}"
           data-amount="2000"
           data-name="Stripe.com"
-          data-description="2 widgets"
+          data-description="Test Item"
           data-image="/img/documentation/checkout/marketplace.png"
           data-locale="auto">
         </script>
@@ -28,18 +35,57 @@ note:
 code:
   es6: |
     'use latest';
+
+    import express from 'express';
+    import { fromExpress } from 'webtask-tools';
+    import bodyParser from 'body-parser';
     import stripe from 'stripe';
-    module.exports = (ctx, req, res) => {
-      const { STRIPE_SECRET_KEY } = ctx.secrets;
+
+    var app = express();
+    app.use(bodyParser.json());
+
+    app.post('/payment', (req,res) => {
+      var ctx = req.webtaskContext;
+
+      var STRIPE_SECRET_KEY = ctx.secrets.STRIPE_SECRET_KEY;
+
       stripe(STRIPE_SECRET_KEY).charges.create({
-        amount: 2000,
-        currency: 'usd',
+        amount: ctx.data.amount,
+        currency: ctx.data.currency,
         source: ctx.body.stripeToken,
-        description: 'description'
+        description: ctx.data.description
       }, (err, charge) => {
-        const status = error ? 400 : 200;
-        const message = error ? error.message : 'Payment done!';
+        const status = err ? 400 : 200;
+        const message = err ? err.message : 'Payment done!';
         res.writeHead(status, { 'Content-Type': 'text/html' });
         return res.end('<h1>' + message + '</h1>');
       });
-    };
+    });
+
+    // comment this to disable the test form
+    app.get('/', (req, res) => {
+      var ctx = req.webtaskContext;
+      
+      res.send(renderView(ctx));
+    });
+
+    function renderView(ctx) {
+      return `
+      <form action="/stripe/payment?currency=USD&amount=100&description=2%20Widgets" method="POST">
+        <script
+          src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="${ctx.secrets.STRIPE_PUBLISHABLE_KEY}"
+          data-amount="2000"
+          data-name="Stripe.com"
+          data-description="Test item"
+          data-image="/img/documentation/checkout/marketplace.png"
+          data-locale="auto">
+        </script>
+      </form>
+      `;
+    }
+
+    module.exports = fromExpress(app); 
+secrets: 
+  STRIPE_PUBLISHABLE_KEY: 'REPLACE_WITH_STRIPE_PUBLISHABLE_KEY'
+  STRIPE_SECRET_KEY: 'REPLACE_WITH_STRIP_SECRET_KEY'
