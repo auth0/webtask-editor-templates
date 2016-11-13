@@ -193,7 +193,7 @@ code:
       // Note the use of Auth0.ensureProfile(). By using this, you will get the full user profile on req.user
       // including the access_token from the underlying identity provider (e.g. Facebook, Google)
       console.log(req.user);
-      res.json({ access_token : 'access_token for ' req.user.identities[0].provider + ' is: ' + req.user.identities[0].access_token});
+      res.json({ access_token : 'access_token for ' + req.user.identities[0].provider + ' is: ' + req.user.identities[0].access_token});
     });
 
 
