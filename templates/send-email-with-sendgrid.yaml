@@ -3,6 +3,22 @@ author:
   name: nachoesmite
   link: https://github.com/nachoesmite
 type: sample
+sampleRequest: 
+  method: 'POST'
+  type: 'json'
+  mode: 'body'
+  data: |
+    {
+      "from_email":"jane.doe@xxxxx.com",
+      "to_email":"john.doe@xxxxx.com",
+      "subject":"Subject",
+      "content":"Some content"
+    }
+settings:
+  parse: true
+  merge: true
+secrets: 
+  SENDGRID_API_KEY: 'REPLACE_WITH_API_KEY'
 order: 8
 description: |
   A sample about sending emails with Sendgrid.
@@ -14,7 +30,7 @@ note:
 code:
   es6: |
     'use latest';
-    import sendgrid from 'sendgrid';
+    import sendgrid from 'sendgrid@4.7.0';
     const helper = sendgrid.mail;
     module.exports = (context, cb) => {
       // POST a JSON with at least the following properties.
