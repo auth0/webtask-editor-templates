@@ -32,7 +32,6 @@ code:
         const { _id } = req.params ;
         if (err) return next(err);
         db.collection(collection).findOne({ _id : new ObjectID(_id) }, (err, result) => {
-          console.log(err,result);
           db.close();
           if (err) return next(err);
           res.status(200).send(result);
