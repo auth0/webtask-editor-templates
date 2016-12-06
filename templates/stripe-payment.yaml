@@ -12,11 +12,11 @@ note:
     This template creates a Webtask with 2 routes.
 
     `/`        - Returns a test form with a pay button
-    `/payment` - Payment endpoint which invokes the Stripe API
+    `/payment` - Payment endpoint which invokes the Stripe API. Clients must send the payload in application/x-www-form-urlencoded format
 
     * You must set a valid `STRIPE_SECRET_KEY` for the `payment` API to work. 
     * Set a valid `STRIPE_PUBLISHABLE_KEY` for the payment page to work. 
-
+    
     HTML code snippet example to embed into your web-page / application.
     ```html
       <form action="{url_to_your_webtask}&currency=USD&amount=2000&description=Test%20item" method="POST">
@@ -41,18 +41,20 @@ code:
     import bodyParser from 'body-parser';
     import stripe from 'stripe';
 
+    bodyParser.urlencoded();
+
     var app = express();
-    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded());
 
     app.post('/payment', (req,res) => {
       var ctx = req.webtaskContext;
       var STRIPE_SECRET_KEY = ctx.secrets.STRIPE_SECRET_KEY;
-
+      console.log(req.body);
       stripe(STRIPE_SECRET_KEY).charges.create({
-        amount: ctx.data.amount,
-        currency: ctx.data.currency,
-        source: ctx.body.stripeToken,
-        description: ctx.data.description
+        amount: req.query.amount,
+        currency: req.query.currency,
+        source: req.body.stripeToken, 
+        description: req.query.description
       }, (err, charge) => {
         const status = err ? 400 : 200;
         const message = err ? err.message : 'Payment done!';
@@ -68,22 +70,22 @@ code:
     });
 
     function renderView(ctx) {
+      //change /stripe-payment below to your task name
       return `
-      <form action="/stripe/payment?currency=USD&amount=2000&description=Test%20item" method="POST">
+      <form action="/stripe-payment/payment?currency=USD&amount=2000&description=Test%20item" method="POST">
         <script
           src="https://checkout.stripe.com/checkout.js" class="stripe-button"
           data-key="${ctx.secrets.STRIPE_PUBLISHABLE_KEY}"
           data-amount="2000"
           data-name="Stripe.com"
           data-description="Test item"
-          data-image="/img/documentation/checkout/marketplace.png"
           data-locale="auto">
         </script>
       </form>
       `;
     }
 
-    module.exports = fromExpress(app); 
+    module.exports = fromExpress(app);  
 secrets: 
   STRIPE_PUBLISHABLE_KEY: 'REPLACE_WITH_STRIPE_PUBLISHABLE_KEY'
-  STRIPE_SECRET_KEY: 'REPLACE_WITH_STRIP_SECRET_KEY'
+  STRIPE_SECRET_KEY: 'REPLACE_WITH_STRIPE_SECRET_KEY'
