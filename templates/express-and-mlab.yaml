@@ -19,15 +19,19 @@ code:
     import express from 'express';
     import Webtask from 'webtask-tools';
     import { MongoClient } from 'mongodb';
+    import { ObjectID } from 'mongodb';
+
     const collection = 'my-collection';
     const server = express();
+
+
     server.use(bodyParser.json());
-    server.get('/:id', (req, res, next) => {
+    server.get('/:_id', (req, res, next) => {
       const { MONGO_URL } = req.webtaskContext.data;
-      const { id } = req.params;
       MongoClient.connect(MONGO_URL, (err, db) => {
+        const { _id } = req.params ;
         if (err) return next(err);
-        db.collection(collection).findOne({ id }, (err, result) => {
+        db.collection(collection).findOne({ _id : new ObjectID(_id) }, (err, result) => {
           db.close();
           if (err) return next(err);
           res.status(200).send(result);
@@ -48,3 +52,7 @@ code:
       });
     });
     module.exports = Webtask.fromExpress(server);
+secrets:
+  MONGO_URL : 'REPLACE_WITH_MONGO_URL'
+
+
