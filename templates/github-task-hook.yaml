@@ -4,6 +4,9 @@ author:
   link: https://github.com/ggoodman
 order: 2
 type: webhook
+settings:
+  parse: true
+  merge: true
 description: |
   A webtask that can be used as a Github webhook to automatically tag new versions based on changes to the file `package.json`.
 note:
