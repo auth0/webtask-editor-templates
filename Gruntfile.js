@@ -20,7 +20,7 @@ module.exports = function exec(grunt) {
         region:          process.env.S3_REGION,
         uploadConcurrency: 5,
         params: {
-          CacheControl: 'public, max-age=300'
+          CacheControl: 'max-age=300'
         },
       },
       clean: {
@@ -53,14 +53,6 @@ module.exports = function exec(grunt) {
           }
         ]
       },
-    },
-    http: {
-      purge_templates: {
-        options: {
-          url: `${process.env.CDN_ROOT}/${TMPL_PATH}/templates.json`,
-          method: 'DELETE'
-        }
-      }
     }
   });
 
@@ -81,12 +73,9 @@ module.exports = function exec(grunt) {
     grunt.file.write(path.join('release', 'templates.json'), JSON.stringify(templates, null, 2));
   });
 
-  grunt.registerTask('purge-cdn', ['http:purge_templates']);
-
   grunt.registerTask('cdn', [
     'templates',
     'aws_s3:clean',
-    'aws_s3:publish',
-    'purge-cdn'
+    'aws_s3:publish'
   ]);
 };
