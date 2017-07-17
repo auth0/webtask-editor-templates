@@ -57,7 +57,7 @@ code:
 
         return request.get(options, (err, response, body) => {
           if (err) return next(Boom.wrap(err, 400));
-          if (response.statusCode !== 200) return next(Boom.badRequest('Errror calling users API'));
+          if (response.statusCode !== 200) return next(Boom.badRequest('Error calling users API'));
           
           function done(err){
             req.user = body;
