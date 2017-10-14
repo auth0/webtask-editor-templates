@@ -41,10 +41,12 @@ code:
     import bodyParser from 'body-parser';
     import stripe from 'stripe';
 
-    bodyParser.urlencoded();
-
     var app = express();
-    app.use(bodyParser.urlencoded());
+    app.use(bodyParser.urlencoded({
+      extended: true
+    }));
+
+    app.use(bodyParser.json());
 
     app.post('/payment', (req,res) => {
       var ctx = req.webtaskContext;
