@@ -7,9 +7,15 @@ order: 13
 description: |
   Using an Auth0 redirect rule to add a custom field `full_name` to user_metadata. See the example Auth0 rule that applies to this kind of webtask template here: https://auth0.com/docs/rules/current/redirect.
 note:
-  title: instructions
+  title: Instructions
   content: |
     You must set the following webtask secrets: `AUTH0_DOMAIN` (e.g. YOURS.auth0.com), both `CLIENT_ID` and `CLIENT_SECRET` matching the one used in the rule. Also, create a non-interactive client and authorize it on Auth0 Management API (Auth0 Dashboard > APIs > Auth0 Management API > Non Interactive Clients > Authorize your newly created non-interactive client granting all scopes), and set webtask secrets `NON_INTERACTIVE_CLIENT_ID` and `NON_INTERACTIVE_CLIENT_SECRET`. Lastly, add the `auh0` NPM Module to your webtask.
+secrets:
+  AUTH0_DOMAIN: 'REPLACE_WITH_YOUR_AUTH0_DOMAIN'
+  CLIENT_ID: 'REPLACE_WITH_THE_CLIENT_ID_OF_THE_APP_YOU_HOOKED_AUTH0'
+  CLIENT_SECRET: 'REPLACE_WITH_THE_CLIENT_SECRET_OF_THE_APP_YOU_HOOKED_AUTH0'
+  NON_INTERACTIVE_CLIENT_ID: 'REPLACE_WITH_NEWLY_CREATED_NON_INTERACTION_CLIENT_ID'
+  NON_INTERACTION_CLIENT_SECRET: 'REPLACE_WITH_NEWLY_CREATED_NON_INTERACTION_CLIENT_SECRET'
 code:
   es6: |
     const express = require('express');
