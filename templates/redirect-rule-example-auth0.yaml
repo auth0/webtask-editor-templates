@@ -1,0 +1,72 @@
+name: Webtask to handle Auth0 redirect rule example to add a new user_metadata field
+type: secure
+author: 
+  name: Leo Giovanetti
+  link: https://github.com/leog
+order: 13
+description: |
+  Using an Auth0 redirect rule to add a custom field `full_name` to user_metadata. See the example Auth0 rule that applies to this kind of webtask template here: https://auth0.com/docs/rules/current/redirect.
+note:
+  title: instructions
+  content: |
+    You must set the following webtask secrets: `AUTH0_DOMAIN` (e.g. YOURS.auth0.com), both `CLIENT_ID` and `CLIENT_SECRET` matching the one used in the rule. Also, create a non-interactive client and authorize it on Auth0 Management API (Auth0 Dashboard > APIs > Auth0 Management API > Non Interactive Clients > Authorize your newly created non-interactive client granting all scopes), and set webtask secrets `NON_INTERACTIVE_CLIENT_ID` and `NON_INTERACTIVE_CLIENT_SECRET`. Lastly, add the `auh0` NPM Module to your webtask.
+code:
+  es6: |
+    const express = require('express');
+    const jwt = require('express-jwt');
+    const wt = require('webtask-tools');
+    const bodyParser = require('body-parser');
+    const app = express();
+    const ManagementClient = require('auth0').ManagementClient;
+    const jsonwebtoken = require('jsonwebtoken');
+
+    module.exports = wt.fromExpress((req, res) => {
+      // setting up Auth0 Management API client (docs http://auth0.github.io/node-auth0/module-management.ManagementClient.html)
+      const managementClient = new ManagementClient({
+        domain: req.webtaskContext.secrets.AUTH0_DOMAIN,
+        clientId: req.webtaskContext.secrets.NON_INTERACTIVE_CLIENT_ID,
+        clientSecret: req.webtaskContext.secrets.NON_INTERACTIVE_CLIENT_SECRET
+      });
+  
+      // to be able to parse any kind of request's bodies content
+      app.use(bodyParser.json());
+      app.use(bodyParser.urlencoded({
+        extended: true
+      })); 
+  
+      // all routes will check the JWT
+      app.use(jwt({
+        getToken: function(data) {
+          // grab the access token from the query string sent by Auth0 rule instead of default authorization bearer header
+          return data.query.token;
+        },
+        secret: req.webtaskContext.secrets.CLIENT_SECRET,
+        audience: req.webtaskContext.secrets.CLIENT_ID,
+        issuer: `https://${req.webtaskContext.secrets.AUTH0_DOMAIN}/`
+      }));
+  
+      // exposing an endpoint to add the custom field full_name to user_metadata from a form using method POST
+      app.post('/add-full-name', (req, res) => {
+        managementClient.users.updateUserMetadata(
+          { id: req.user.sub }, 
+          { full_name: req.body.full_name},
+          (err, user) => {
+            if (err) return res.status(500).send(JSON.stringify(err));
+        
+            // creating a new jwt needed by the Auth0 rule to validate the change
+            jsonwebtoken.sign({
+              fullNameAdded: true,
+              sub: req.user.sub
+            }, req.webtaskContext.secrets.CLIENT_SECRET, {
+              expiresInMinutes: 5,
+              audience: req.webtaskContext.secrets.CLIENT_ID,
+              issuer: `https://${req.webtaskContext.secrets.AUTH0_DOMAIN}/`
+            }, 
+            (token) => {
+              res.redirect(`https://${req.webtaskContext.secrets.AUTH0_DOMAIN}/continue?token=${token}&state=${req.body.state}`);  
+            });
+          });
+      });
+  
+      return app(req, res);
+    });
