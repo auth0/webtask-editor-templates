@@ -1,4 +1,4 @@
-name: Express with MongoDB
+name: Express with MongoDB (3.0)
 type: sample
 author: 
   name: verlic
@@ -21,31 +21,47 @@ code:
     import { MongoClient } from 'mongodb';
     import { ObjectID } from 'mongodb';
 
+    const database = 'my-database';
     const collection = 'my-collection';
     const server = express();
 
 
     server.use(bodyParser.json());
-    server.get('/:_id', (req, res, next) => {
-      const { MONGO_URL } = req.webtaskContext.data;
-      MongoClient.connect(MONGO_URL, (err, db) => {
+    server.get('/all', (req, res, next) => {
+      const { MONGO_URL } = req.webtaskContext.secrets;
+      MongoClient.connect(MONGO_URL, (err, client) => {
+        if (err) return next(err);
+        let collection = client.db(database).collection(collection)
+        let cursor = collection.find({}, {limit: 5});  // hard-limit to 5 records for example
+        cursor.toArray((err, docs) => {
+          if (err) return next(err);
+          res.status(200).send(docs);
+          client.close()
+        })
+      })
+    })
+
+    server.get('/id/:_id', (req, res, next) => {
+      const { MONGO_URL } = req.webtaskContext.secrets;
+      MongoClient.connect(MONGO_URL, (err, client) => {
         const { _id } = req.params ;
         if (err) return next(err);
-        db.collection(collection).findOne({ _id : new ObjectID(_id) }, (err, result) => {
-          db.close();
+        client.db(database).collection(collection).findOne({ _id: new ObjectID(_id) }, (err, result) => {
+          client.close();
           if (err) return next(err);
           res.status(200).send(result);
         });
       });
     });
+
     server.post('/', (req, res, next) => {
-      const { MONGO_URL } = req.webtaskContext.data;
+      const { MONGO_URL } = req.webtaskContext.secrets;
       // Do data sanitation here.
       const model = req.body;
-      MongoClient.connect(MONGO_URL, (err, db) => {
+      MongoClient.connect(MONGO_URL, (err, client) => {
         if (err) return next(err);
-        db.collection(collection).insertOne(model, (err, result) => {
-          db.close();
+        client.db(database).collection(collection).insertOne(model, (err, result) => {
+          client.close();
           if (err) return next(err);
           res.status(201).send(result);
         });
