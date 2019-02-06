@@ -8,8 +8,11 @@ description: |
 note:
   title: How to use with Cloudinary Upload Widget
   content: |
+    Cloudinary's upload widget is a complete, interactive UI that enables your users
+    to upload files from a variety of sources to your website or application. 
+    Advanced users can also use the upload widget with signed uploads for a more secure process when required.
     This template creates endpoint which generate and return signature of the upload request
-
+   
     * You must set a valid `API_SECRET` +  `API_KEY` +  `CLOUD_NAME` for the API to work. 
         
     HTML Upload Widget code snippet example to embed into your web-page.
