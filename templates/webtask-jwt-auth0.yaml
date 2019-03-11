@@ -13,7 +13,9 @@ note:
 code:
   es6: |
     'use latest';
-
+    
+    import Boom from 'boom';
+    import request from 'request';
     import express from 'express';
     import { fromExpress } from 'webtask-tools';
     import bodyParser from 'body-parser';
@@ -23,6 +25,7 @@ code:
 
     const jwksRsa = require('jwks-rsa');
     const jwt = require('express-jwt');
+    const jwt_n = require('jsonwebtoken');
 
     var Auth0 = {
       __settings : {
@@ -54,7 +57,7 @@ code:
 
         return request.get(options, (err, response, body) => {
           if (err) return next(Boom.wrap(err, 400));
-          if (response.statusCode !== 200) return next(Boom.badRequest('Errror calling users API'));
+          if (response.statusCode !== 200) return next(Boom.badRequest('Error calling users API'));
           
           function done(err){
             req.user = body;
@@ -90,7 +93,7 @@ code:
           
           data = data || {};
           
-          if (data.access_token && jwt.decode(data.access_token).exp > Date.now()){
+          if (data.access_token && jwt_n.decode(data.access_token).exp > Date.now()){
             req.access_token = data.access_token;
             return next();
           }
